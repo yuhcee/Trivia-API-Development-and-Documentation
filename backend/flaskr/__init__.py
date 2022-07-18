@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -34,16 +35,19 @@ def create_app(test_config=None):
     """
     @app.route("/categories")
     def retrieve_categories():
-        categories = Category.query.order_by(Category.id).all()
+        categories_query = Category.query.all()
 
-        if len(categories) == 0:
+        if len(categories_query) == 0:
             abort(404)
+
+        categories = {}
+        
+        for category in categories_query:
+            categories[category.id] = category.type
 
         return jsonify(
             {
-                "success": True,
-                "categories": categories,
-                "total_categories": len(Category.query.all()),
+                "categories": categories
             }
         )
 
