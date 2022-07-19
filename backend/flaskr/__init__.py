@@ -53,7 +53,7 @@ def create_app(test_config=None):
         return response
 
     """
-    @TODO:
+    @TODO: DONE
     Create an endpoint to handle GET requests
     for all available categories.
     """
@@ -69,7 +69,7 @@ def create_app(test_config=None):
         )
 
     """
-    @TODO:
+    @TODO: DONE
     Create an endpoint to handle GET requests for questions,
     including pagination (every 10 questions).
     This endpoint should return a list of questions,
@@ -103,7 +103,7 @@ def create_app(test_config=None):
         )
 
     """
-    @TODO:
+    @TODO: DONE
     Create an endpoint to DELETE question using a question ID.
 
     TEST: When you click the trash icon next to a question, the question will be removed.
@@ -131,7 +131,7 @@ def create_app(test_config=None):
             abort(422)
 
     """
-    @TODO:
+    @TODO: DONE
     Create an endpoint to POST a new question,
     which will require the question and answer text,
     category, and difficulty score.
@@ -142,7 +142,7 @@ def create_app(test_config=None):
     """
 
     """
-    @TODO:
+    @TODO: DONE
     Create a POST endpoint to get questions based on a search term.
     It should return any questions for whom the search term
     is a substring of the question.
@@ -155,6 +155,10 @@ def create_app(test_config=None):
     def create_or_search_question():
         body = request.get_json()
 
+        new_question = body.get("question", None)
+        new_answer = body.get("answer", None)
+        new_category = body.get("category", None)
+        new_difficulty = body.get("difficulty", None)
         search_term = body.get("searchTerm", None)
 
         try:
@@ -171,7 +175,22 @@ def create_app(test_config=None):
                         "total_questions": len(current_questions),
                     }
                 )
+            else:
+                question = Question(
+                    question=new_question, 
+                    answer=new_answer, 
+                    category=new_category,
+                    difficulty=new_difficulty
+                )
+                question.insert()
 
+                return jsonify(
+                    {
+                        "success": True,
+                        "created": question.id,
+                    }
+                )
+                
         except:
             abort(422)
 
