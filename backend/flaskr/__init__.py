@@ -110,6 +110,26 @@ def create_app(test_config=None):
     This removal will persist in the database and when you refresh the page.
     """
 
+    @app.route("/questions/<int:question_id>", methods=["DELETE"])
+    def delete_question_by_id(question_id):
+        try:
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+
+            if question is None:
+                abort(404)
+
+            question.delete()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "deleted": question_id,
+                }
+            )
+
+        except:
+            abort(422)
+
     """
     @TODO:
     Create an endpoint to POST a new question,
