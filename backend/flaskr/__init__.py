@@ -70,7 +70,7 @@ def create_app(test_config=None):
                 {
                     "success": True,
                     "categories": categories
-                })
+                }), 200
         except:
             abort(422)
 
@@ -107,7 +107,7 @@ def create_app(test_config=None):
                     "categories": categories,
                     "currentCategory": None
                 }
-            )
+            ), 200
         except:
             abort(422)
 
@@ -135,7 +135,7 @@ def create_app(test_config=None):
                     "success": True,
                     "deleted": question_id,
                 }
-            )
+            ), 200
 
         except:
             abort(422)
@@ -184,7 +184,7 @@ def create_app(test_config=None):
                         "questions": current_questions,
                         "total_questions": len(current_questions),
                     }
-                )
+                ), 200
             else:
                 question = Question(
                     question=new_question,
@@ -199,7 +199,7 @@ def create_app(test_config=None):
                         "success": True,
                         "created": question.id,
                     }
-                )
+                ), 200
 
         except:
             abort(422)
@@ -229,12 +229,12 @@ def create_app(test_config=None):
                 'questions': current_questions,
                 'totalQuestions': len(Question.query.all()),
                 'currentCategory': category.type
-            })
+            }), 200
         except:
             abort(422)
 
     """
-    @TODO:
+    @TODO: DONE
     Create a POST endpoint to get questions to play the quiz.
     This endpoint should take category and previous question parameters
     and return a random questions within the given category,
@@ -268,19 +268,38 @@ def create_app(test_config=None):
                 return jsonify({
                     'success': True,
                     'question': selected_question
-                })
+                }), 200
 
             return jsonify({
                 'success': True
-            })
+            }), 200
 
         except:
             abort(422)
 
     """
-    @TODO:
+    @TODO: DONE
     Create error handlers for all expected errors
     including 404 and 422.
     """
+    @app.errorhandler(404)
+    def not_found(error):
+        return (
+            jsonify({"success": False, "error": 404,
+                    "message": "resource not found"}),
+            404,
+        )
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return (
+            jsonify({"success": False, "error": 422,
+                    "message": "unprocessable entity"}),
+            422,
+        )
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({"success": False, "error": 400, "message": "bad request"}), 400
 
     return app
