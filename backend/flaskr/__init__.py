@@ -103,9 +103,9 @@ def create_app(test_config=None):
                 {
                     "success": True,
                     "questions": current_questions,
-                    "totalQuestions": total_questions,
+                    "total_questions": total_questions,
                     "categories": categories,
-                    "currentCategory": None
+                    "current_category": None
                 }
             ), 200
         except:
