@@ -72,7 +72,7 @@ def create_app(test_config=None):
                     "categories": categories
                 }), 200
         except:
-            abort(422)
+            abort(404)
 
     """
     @TODO: DONE
@@ -108,8 +108,9 @@ def create_app(test_config=None):
                     "current_category": None
                 }
             ), 200
+
         except:
-            abort(422)
+            abort(404)
 
     """
     @TODO: DONE
@@ -227,11 +228,11 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'questions': current_questions,
-                'totalQuestions': len(Question.query.all()),
-                'currentCategory': category.type
+                'total_questions': len(current_questions),
+                'current_category': category.type
             }), 200
         except:
-            abort(422)
+            abort(404)
 
     """
     @TODO: DONE
@@ -262,12 +263,10 @@ def create_app(test_config=None):
                 questions = Question.query.filter(
                     Question.category == quiz_category['id'], Question.id.notin_(previous_questions)).all()
 
-                selected_question = random.choice(questions).format()
-
             if questions:
                 return jsonify({
                     'success': True,
-                    'question': selected_question
+                    'question': random.choice(questions).format()
                 }), 200
 
             return jsonify({
@@ -301,5 +300,9 @@ def create_app(test_config=None):
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({"success": False, "error": 400, "message": "bad request"}), 400
+
+    @app.errorhandler(405)
+    def not_allowed(error):
+        return jsonify({"success": False, "error": 405, "message": "method not allowed"}), 405
 
     return app
