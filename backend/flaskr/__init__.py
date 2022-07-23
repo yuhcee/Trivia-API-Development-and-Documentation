@@ -249,19 +249,19 @@ def create_app(test_config=None):
     def retrieve_quiz_question():
         body = request.get_json()
 
-        quiz_category = body.get('quiz_category', None)
+        category = body.get('quiz_category', None)
         previous_questions = body.get('previous_questions', None)
 
         try:
-            if quiz_category is None or previous_questions is None or ("id" not in quiz_category.keys()):
+            if category is None or previous_questions is None or ("id" not in category.keys()):
                 abort(400)
 
-            if quiz_category['id'] == 0:
+            if category['id'] == 0:
                 questions = Question.query.filter(
-                    Question.id.notin_(previous_questions)).all()
+                    Question.id not in previous_questions).all()
             else:
                 questions = Question.query.filter(
-                    Question.category == quiz_category['id'], Question.id.notin_(previous_questions)).all()
+                    Question.category == category['id'], Question.id not in previous_questions).all()
 
             if questions:
                 return jsonify({
